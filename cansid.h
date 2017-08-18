@@ -8,7 +8,8 @@ struct cansid_state {
 		CANSID_PARSE,
 		CANSID_BGCOLOR,
 		CANSID_FGCOLOR,
-		CANSID_ENDVAL
+		CANSID_EQUALS,
+		CANSID_ENDVAL,
 	} state;
 	unsigned char style;
 	unsigned char next_style;

@@ -13,7 +13,7 @@ Then, whenever you receive a char that you want to run through the parser, hand 
 char c = 'x'; // Whatever you want to parse
 struct color_char ch = cansid_process(&state, c);
 ```
-The returned struct indicates how you should print the character. It contains two fields: `style`, and `ascii`. The `style` field is arranged in [this format](http://wiki.osdev.org/Text_UI#Colours) (although the brightness bit is currently not used). The `ascii` field is simply the character which should be printed. If `ascii` is the NUL byte (i.e `0x00` or `\0`), then the character should not be outputted to the screen (and therefore the `style` field should be ignored too).
+The returned struct indicates how you should print the character. It contains two fields: `style`, and `ascii`. The `style` field is arranged in [this format](http://wiki.osdev.org/Text_UI#Colours). The `ascii` field is simply the character which should be printed. If `ascii` is the NUL byte (i.e `0x00` or `\0`), then the character should not be outputted to the screen (and therefore the `style` field should be ignored too).
 
 ## Building
 

@@ -9,7 +9,7 @@ struct cansid_state cansid_init(void) {
 	struct cansid_state rv = {
 		.state = CANSID_ESC,
 		.style = 0x0F,
-		.next_style = 0x00
+		.next_style = 0x0F
 	};
 	return rv;
 }
@@ -48,31 +48,46 @@ struct color_char cansid_process(struct cansid_state *state, char x) {
 			} else if (x == '0') {
 				state->state = CANSID_ENDVAL;
 				state->next_style = 0x0F;
+			} else if (x == '1') {
+				state->state = CANSID_ENDVAL;
+				state->next_style |= (1 << 3);
+			} else if (x == '=') {
+				state->state = CANSID_EQUALS;
 			} else {
 				state->state = CANSID_ESC;
-				state->next_style = 0x00;
+				state->next_style = state->style;
 				rv.ascii = x;
 			}
 			break;
 		case CANSID_BGCOLOR:
 			if (x >= '0' && x <= '7') {
 				state->state = CANSID_ENDVAL;
-				state->next_style &= 0x0F;
+				state->next_style &= 0x1F;
 				state->next_style |= cansid_convert_color(x - '0') << 4;
 			} else {
 				state->state = CANSID_ESC;
-				state->next_style = 0x00;
+				state->next_style = state->style;
 				rv.ascii = x;
 			}
 			break;
 		case CANSID_FGCOLOR:
 			if (x >= '0' && x <= '7') {
 				state->state = CANSID_ENDVAL;
-				state->next_style &= 0xF0;
+				state->next_style &= 0xF8;
 				state->next_style |= cansid_convert_color(x - '0');
 			} else {
 				state->state = CANSID_ESC;
-				state->next_style = 0x00;
+				state->next_style = state->style;
+				rv.ascii = x;
+			}
+			break;
+		case CANSID_EQUALS:
+			if (x == '1') {
+				state->state = CANSID_ENDVAL;
+				state->next_style &= ~(1 << 3);
+			} else {
+				state->state = CANSID_ESC;
+				state->next_style = state->style;
 				rv.ascii = x;
 			}
 			break;
@@ -80,13 +95,12 @@ struct color_char cansid_process(struct cansid_state *state, char x) {
 			if (x == ';') {
 				state->state = CANSID_PARSE;
 			} else if (x == 'm') {
-				// Finish and swap styles
+				// Finish and apply styles
 				state->state = CANSID_ESC;
 				state->style = state->next_style;
-				state->next_style = 0x00;
 			} else {
 				state->state = CANSID_ESC;
-				state->next_style = 0x00;
+				state->next_style = state->style;
 				rv.ascii = x;
 			}
 			break;
