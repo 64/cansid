@@ -6,8 +6,12 @@ struct cansid_state {
 		CANSID_ESC,
 		CANSID_BRACKET,
 		CANSID_PARSE,
+		CANSID_BGCOLOR,
+		CANSID_FGCOLOR,
+		CANSID_ENDVAL
 	} state;
 	unsigned char style;
+	unsigned char next_style;
 };
 
 struct color_char {
