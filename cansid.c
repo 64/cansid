@@ -104,6 +104,8 @@ struct color_char cansid_process(struct cansid_state *state, char x) {
 				rv.ascii = x;
 			}
 			break;
+		default:
+			break;
 	}
 	return rv;
 }
